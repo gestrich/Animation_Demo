@@ -44,6 +44,9 @@
     for(int x=0; x<[images count]; x++){
         
         UIImageView *mapView = images[x];
+        CGRect newFrame = self.scrollView.frame;
+        newFrame.size.width = self.scrollView.frame.size.width;
+        mapView.frame = newFrame;
         [self addView:mapView];
         mapView.layer.zPosition = -([self.flyViews count] - x);
     }
@@ -53,30 +56,31 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [self.flyViews enumerateObjectsUsingBlock:^(UIView * obj, NSUInteger idx, BOOL *stop) {
-        [self set3d:obj.layer];
+        //[self set3d:obj.layer];
     }];
     
 }
 
 
 -(void)addView:(UIView *)mapView{
-    CGFloat yOffset = [[self.flyViews lastObject] frame].origin.y + [[self.flyViews lastObject] frame].size.height ;
-    mapView.frame = CGRectMake(20.0, yOffset, self.scrollView.frame.size.width -40, mapView.frame.size.height);
+    CGFloat yOffset = [[self.flyViews lastObject] frame].origin.y + 50  ;
+
+    mapView.layer.anchorPoint = CGPointMake(0.5, 0.0);
+    mapView.layer.position = CGPointMake(mapView.layer.bounds.size.width/2, yOffset);
     mapView.contentMode = UIViewContentModeScaleAspectFit;
     
-    CATransform3D transform = mapView.layer.transform;
-    transform.m34 = 1.0/250;
-    transform = CATransform3DRotate(transform, M_PI_4/4, 1.0, 0.0, 0.0);
+    CATransform3D transform = CATransform3DIdentity;
+    transform.m34 = 1.0/200;
+    transform = CATransform3DRotate(transform, M_PI_4/2, 1.0, 0.0, 0.0);
     mapView.layer.transform = transform;
+
     
-    
-    [mapView.layer addAnimation:[self pullDownAnimation] forKey:nil];
-    mapView.layer.speed = 0.0;
+    //[mapView.layer addAnimation:[self pullDownAnimation] forKey:nil];
+    //mapView.layer.speed = 0.0;
     
     [self.flyViews addObject:mapView];
     
     [self.scrollView addSubview:mapView];
-    
 }
 
 
@@ -88,17 +92,17 @@
     /*
     CABasicAnimation *move = [CABasicAnimation animationWithKeyPath:@"transform.rotation.x"];
     move.fromValue = @0;
-    move.toValue = @M_PI_2;
- */
-    
-    CABasicAnimation *loc = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    loc.fromValue = @1.0;
-    loc.toValue = @-0.5;
+    move.toValue = @M_PI_4 ;
+ 
+    */
+   CABasicAnimation *loc = [CABasicAnimation animationWithKeyPath:@"transform.translation.z"];
+    loc.fromValue = @1;
+    loc.toValue = @500;
     
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.duration = 1.0; // For convenience when using timeOffset to control the animation
     group.animations = @[loc];
-    
+
     return group;
 }
 
@@ -112,11 +116,15 @@
 
 -(void)set3d:(CALayer *)layer{
     
-    CGFloat distanceToCenter = (layer.frame.origin.y + (layer.frame.size.height/2)) -
-    (self.scrollView.contentOffset.y + (self.scrollView.frame.size.height/2));
+    CGFloat imageCenter = (layer.frame.origin.y + (layer.frame.size.height/2));
+    CGFloat contentCenter = (self.scrollView.contentOffset.y + (self.scrollView.frame.size.height/2));
+    CGFloat distanceToCenter = imageCenter - contentCenter;
+    
     distanceToCenter = abs(distanceToCenter);
-    CGFloat percent =distanceToCenter / self.scrollView.frame.size.height/2;
+    CGFloat percent =distanceToCenter / self.scrollView.frame.size.height;
     NSLog(@"percent = %f", percent);
+    NSLog(@"imageCenter = %f", imageCenter);
+    NSLog(@"contentCenter = %f", contentCenter);
     layer.timeOffset = percent;
     
 }
