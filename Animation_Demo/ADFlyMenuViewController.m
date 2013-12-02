@@ -12,6 +12,9 @@
 
 @property (strong, nonatomic) NSMutableArray *flyViews;
 
+@property BOOL viewAppeared;
+
+
 @end
 
 @implementation ADFlyMenuViewController
@@ -87,9 +90,20 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated{
-    [self.flyViews enumerateObjectsUsingBlock:^(UIView * obj, NSUInteger idx, BOOL *stop) {
-        [self set3d:obj.layer];
-    }];
+    if(!self.viewAppeared){
+        [self.flyViews enumerateObjectsUsingBlock:^(UIView * obj, NSUInteger idx, BOOL *stop) {
+            [self set3d:obj.layer];
+        }];
+    }else{
+        for(UIView *view in self.flyViews){
+            [view.layer removeAllAnimations];
+            [view.layer addAnimation:[self pullDownAnimation] forKey:nil];
+            view.layer.speed = 0.0;
+        }
+        
+    }
+    
+    self.viewAppeared = YES;
     
 }
 

@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
     <scenes>
-        <!--View Controller - Item-->
+        <!--View Controller - Logo-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="ADViewController" sceneMemberID="viewController">
@@ -24,7 +24,7 @@
                         </subviews>
                         <color key="backgroundColor" red="0.090196080505847931" green="0.17254902422428131" blue="0.24705883860588074" alpha="1" colorSpace="deviceRGB"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="63g-B5-ibP"/>
+                    <tabBarItem key="tabBarItem" title="Logo" id="63g-B5-ibP"/>
                     <connections>
                         <outlet property="planeImage" destination="t1f-gi-xn5" id="mSC-vG-6VO"/>
                         <outlet property="ringImage" destination="rad-Fd-xDk" id="Cwd-0U-m2u"/>
@@ -34,7 +34,7 @@
             </objects>
             <point key="canvasLocation" x="537" y="-17"/>
         </scene>
-        <!--Fly Menu View Controller - Item-->
+        <!--Fly Menu View Controller - Menu-->
         <scene sceneID="pnd-pd-Fwg">
             <objects>
                 <viewController id="jpZ-xd-i55" customClass="ADFlyMenuViewController" sceneMemberID="viewController">
@@ -50,7 +50,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="QOT-Zo-02S"/>
+                    <tabBarItem key="tabBarItem" title="Menu" id="QOT-Zo-02S"/>
                     <connections>
                         <outlet property="scrollView" destination="rzz-IA-iW2" id="AqC-ko-tVD"/>
                     </connections>
@@ -67,7 +67,7 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" translucent="NO" id="0f3-qM-Njy">
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                     </tabBar>
                     <connections>
                         <segue destination="vXZ-lx-hvc" kind="relationship" relationship="viewControllers" id="3Uz-B7-Wfx"/>
