@@ -52,11 +52,38 @@
         CGRect newFrame = self.scrollView.frame;
         newFrame.size.width = self.scrollView.frame.size.width;
         mapView.frame = newFrame;
+        
+        UIView *closeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, newFrame.size.width, 20.0)];
+        closeView.backgroundColor = [UIColor redColor];
+        
+        mapView.image = [ADFlyMenuViewController addStarToThumb:mapView.image];
+        
+        
         [self addView:mapView];
         mapView.layer.zPosition = -([self.flyViews count] - x);
     }
 
 	// Do any additional setup after loading the view.
+}
+
+
++(UIImage*) addStarToThumb:(UIImage*)thumb
+{
+    CGSize size = thumb.size;
+    UIGraphicsBeginImageContext(size);
+    
+    CGPoint thumbPoint = CGPointMake(0, 0);
+    [thumb drawAtPoint:thumbPoint];
+    
+    UIImage* starred = [UIImage imageNamed:@"close.png"];
+    
+    CGPoint starredPoint = CGPointMake(0, 0);
+    [starred drawAtPoint:starredPoint];
+    
+    UIImage* result = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return result;
 }
 
 -(void)viewDidAppear:(BOOL)animated{

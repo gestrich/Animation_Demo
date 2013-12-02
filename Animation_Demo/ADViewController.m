@@ -10,6 +10,8 @@
 
 @interface ADViewController ()
 
+@property BOOL viewAppeared;
+
 @end
 
 @implementation ADViewController
@@ -18,15 +20,21 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
+
     //[self rotateIn3D];
     //[self addFallAnimationForLayer:self.ringImage.layer];
     //[self translateIn3D];
-
+    if(!self.viewAppeared){
+        [self rotateIn2D];
+    }
+    
+    self.viewAppeared = YES;
     
     
 }
@@ -97,13 +105,21 @@
      */
     
     //ios 7
-    /*
-     [UIView animateWithDuration:4.0 delay:0 usingSpringWithDamping:0.5 initialSpringVelocity:5.0 options:UIViewAnimationOptionAllowAnimatedContent animations:^{
-     self.ringImage.transform = CGAffineTransformRotate(self.ringImage.transform,-3.14/2);
-     } completion:nil];
-     */
-    [UIView animateWithDuration:4.0f animations:^{
-        self.planeImage.transform = CGAffineTransformRotate(self.planeImage.transform,3.14/2);
+    
+    [UIView animateWithDuration:2.0 delay:0.25 options:UIViewAnimationOptionAllowAnimatedContent|UIViewAnimationOptionCurveEaseInOut    animations:^{
+     self.ringImage.transform = CGAffineTransformRotate(self.ringImage.transform,-M_PI_4*.65);
+     } completion:nil
+     ];
+    
+    self.planeImage.alpha = 0.1;
+    [UIView animateWithDuration:2.0 animations:^{
+        CGRect frame = self.planeImage.frame;
+        frame.size.height *=1.5;
+        frame.size.width *=1.5;
+        self.planeImage.frame = frame;
+        //self.planeImage.center = center;
+        self.planeImage.alpha = 1.0;
+//        self.planeImage.frame
     }];
     
 }
