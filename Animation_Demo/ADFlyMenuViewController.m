@@ -49,40 +49,61 @@
     
     for(int x=0; x<[images count]; x++){
         
-        UIImageView *mapView = images[x];
+        
+        //Make images
+        UIImageView *placeholderView = images[x];
         CGRect newFrame = self.scrollView.frame;
         newFrame.size.width = self.scrollView.frame.size.width;
-        mapView.frame = newFrame;
+        placeholderView.frame = newFrame;
         
         UIView *closeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, newFrame.size.width, 20.0)];
         closeView.backgroundColor = [UIColor redColor];
         
-        mapView.image = [ADFlyMenuViewController addHeaderToView:mapView.image];
+        placeholderView.image = [ADFlyMenuViewController addHeaderToView:placeholderView.image];
         
-        //2. Set position and anchor point
+        
+        
+        
+        
+        
+        //2. Set anchor point and initial angle
         CGFloat yOffset = [[self.flyViews lastObject] frame].origin.y
         + [[self.flyViews lastObject] frame].size.height/2 ;
         
-        mapView.layer.anchorPoint = CGPointMake(0.5, 0.0);
-        mapView.layer.position = CGPointMake(mapView.layer.bounds.size.width/2, yOffset);
-        mapView.contentMode = UIViewContentModeScaleAspectFit;
+        placeholderView.layer.anchorPoint = CGPointMake(0.5, 0.0);
+        placeholderView.layer.position = CGPointMake(placeholderView.layer.bounds.size.width/2, yOffset);
+        placeholderView.contentMode = UIViewContentModeScaleAspectFit;
         
         //Set on angle initially
         CATransform3D transform = CATransform3DIdentity;
         transform.m34 = 1.0/200;
         transform = CATransform3DRotate(transform, M_PI_4/2, 1.0, 0.0, 0.0);
-        mapView.layer.transform = transform;
+        placeholderView.layer.transform = transform;
         
-        //Add animation
-        [mapView.layer addAnimation:[self customAnimation] forKey:nil];
-        mapView.layer.speed = 0.0;
+        
+        
+        
+        
+        
+        //3. Add animation
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.x"];
+        animation.fromValue = @(M_PI_4/8);
+        animation.toValue = @(M_PI_4/2) ;
+        
+        animation.duration = 1.0; // For convenience when using timeOffset to control the animation
+        [placeholderView.layer addAnimation:animation forKey:nil];
+        placeholderView.layer.speed = 0.0;
+        
+        
+        
+        
         
         //Add to view
-        [self.flyViews addObject:mapView];
-        [self.scrollView addSubview:mapView];
+        [self.flyViews addObject:placeholderView];
+        [self.scrollView addSubview:placeholderView];
 
-        //Enforce z order
-        mapView.layer.zPosition = -([self.flyViews count] - x);
+        //4. Enforce z order
+        placeholderView.layer.zPosition = -([self.flyViews count] - x);
     }
 
 
@@ -114,7 +135,7 @@
 -(void)viewDidAppear:(BOOL)animated{
     if(!self.viewAppeared){
         [self.flyViews enumerateObjectsUsingBlock:^(UIView * obj, NSUInteger idx, BOOL *stop) {
-            [self set3d:obj.layer];
+            [self updateAngles:obj.layer];
         }];
     }
     
@@ -122,50 +143,28 @@
     
 }
 
-/**
- This is the animation that is controlled using timeOffset when the user scrolls
- */
-- (CAAnimation *)customAnimation
-{
-    
-    CABasicAnimation *move = [CABasicAnimation animationWithKeyPath:@"transform.rotation.x"];
-    move.fromValue = @(M_PI_4/4);
-    move.toValue = @(M_PI_4/2) ;
- 
-    CAAnimationGroup *group = [CAAnimationGroup animation];
-    group.duration = 1.0; // For convenience when using timeOffset to control the animation
-    group.animations = @[move];
-
-    return group;
-}
-
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
     [self.flyViews enumerateObjectsUsingBlock:^(UIView * obj, NSUInteger idx, BOOL *stop) {
-        [self set3d:obj.layer];
+        [self updateAngles:obj.layer];
         obj.layer.zPosition = -([self.flyViews count] - idx);
     }];
 }
 
--(void)set3d:(CALayer *)layer{
+-(void)updateAngles:(CALayer *)layer{
     
-    CGFloat imageTop = layer.position.y;
+    //5. Calculate where in the "timeOffset" we should be
+    //based on position of layer
+    CGFloat imageTop = layer.bounds.origin.y;
     CGFloat contentTop = self.scrollView.contentOffset.y;
     CGFloat distanceToTop = imageTop - contentTop;
     
     distanceToTop = abs(distanceToTop);
     CGFloat percent =distanceToTop / self.scrollView.frame.size.height;
-    NSLog(@"percent = %f", percent);
-    NSLog(@"imageTop = %f", imageTop);
-    NSLog(@"contentTop = %f", contentTop);
+    
     layer.timeOffset = percent;
     
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 @end
