@@ -30,7 +30,11 @@
     //[self rotateIn3D];
     //[self translateIn3D];
     //[self rotateWithSpring];
-    //[self combineAnimations];
+    
+    CGRect frame = self.planeImage.frame;
+    frame.origin.x -=50;
+    self.planeImage.frame = frame;
+    [self combineAnimations];
 
 }
 
@@ -176,11 +180,12 @@
      } completion:nil
      ];
     
-    self.planeImage.alpha = 0.1;
-    [UIView animateWithDuration:2.0 animations:^{
+    self.planeImage.alpha = 0.0;
+    [UIView animateWithDuration:2.5 animations:^{
         CGRect frame = self.planeImage.frame;
-        frame.size.height *=1.5;
-        frame.size.width *=1.5;
+        frame.size.height *=1.3;
+        frame.size.width *=1.3;
+        frame.origin.x +=26;
         self.planeImage.frame = frame;
         self.planeImage.alpha = 1.0;
     }];

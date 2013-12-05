@@ -76,7 +76,7 @@
         
         //Set on angle initially
         CATransform3D transform = CATransform3DIdentity;
-        transform.m34 = 1.0/200;
+        transform.m34 = 1.0/300;
         transform = CATransform3DRotate(transform, M_PI_4/2, 1.0, 0.0, 0.0);
         placeholderView.layer.transform = transform;
         
