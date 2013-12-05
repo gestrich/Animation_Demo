@@ -32,6 +32,8 @@
 {
     [super viewDidLoad];
     
+    
+    //1. Adding images
     self.flyViews = [NSMutableArray arrayWithCapacity:10];
     
     self.scrollView.delegate = self;
@@ -45,10 +47,6 @@
                         [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"image3.png"]],
                         [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"image4.png"]]];
     
-    
-    /*NSArray *images = @[
-                        [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"image1.png"]]];
-     */
     for(int x=0; x<[images count]; x++){
         
         UIImageView *mapView = images[x];
@@ -59,18 +57,39 @@
         UIView *closeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, newFrame.size.width, 20.0)];
         closeView.backgroundColor = [UIColor redColor];
         
-        mapView.image = [ADFlyMenuViewController addStarToThumb:mapView.image];
+        mapView.image = [ADFlyMenuViewController addHeaderToView:mapView.image];
         
+        //2. Set position and anchor point
+        CGFloat yOffset = [[self.flyViews lastObject] frame].origin.y
+        + [[self.flyViews lastObject] frame].size.height/2 ;
         
-        [self addView:mapView];
+        mapView.layer.anchorPoint = CGPointMake(0.5, 0.0);
+        mapView.layer.position = CGPointMake(mapView.layer.bounds.size.width/2, yOffset);
+        mapView.contentMode = UIViewContentModeScaleAspectFit;
+        
+        //Set on angle initially
+        CATransform3D transform = CATransform3DIdentity;
+        transform.m34 = 1.0/200;
+        transform = CATransform3DRotate(transform, M_PI_4/2, 1.0, 0.0, 0.0);
+        mapView.layer.transform = transform;
+        
+        //Add animation
+        [mapView.layer addAnimation:[self customAnimation] forKey:nil];
+        mapView.layer.speed = 0.0;
+        
+        //Add to view
+        [self.flyViews addObject:mapView];
+        [self.scrollView addSubview:mapView];
+
+        //Enforce z order
         mapView.layer.zPosition = -([self.flyViews count] - x);
     }
 
-	// Do any additional setup after loading the view.
+
 }
 
 
-+(UIImage*) addStarToThumb:(UIImage*)thumb
++(UIImage*) addHeaderToView:(UIImage*)thumb
 {
     CGSize size = thumb.size;
     UIGraphicsBeginImageContext(size);
@@ -87,6 +106,9 @@
     UIGraphicsEndImageContext();
     
     return result;
+
+
+
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -94,60 +116,22 @@
         [self.flyViews enumerateObjectsUsingBlock:^(UIView * obj, NSUInteger idx, BOOL *stop) {
             [self set3d:obj.layer];
         }];
-    }else{
-        for(UIView *view in self.flyViews){
-            [view.layer removeAllAnimations];
-            [view.layer addAnimation:[self pullDownAnimation] forKey:nil];
-            view.layer.speed = 0.0;
-        }
-        
     }
     
     self.viewAppeared = YES;
     
 }
 
-
--(void)addView:(UIView *)mapView{
-    CGFloat yOffset = [[self.flyViews lastObject] frame].origin.y
-    + [[self.flyViews lastObject] frame].size.height/2 ;
-
-    mapView.layer.anchorPoint = CGPointMake(0.5, 0.0);
-    mapView.layer.position = CGPointMake(mapView.layer.bounds.size.width/2, yOffset);
-    mapView.contentMode = UIViewContentModeScaleAspectFit;
-    
-    CATransform3D transform = CATransform3DIdentity;
-    transform.m34 = 1.0/200;
-    transform = CATransform3DRotate(transform, M_PI_4/2, 1.0, 0.0, 0.0);
-    mapView.layer.transform = transform;
-
-    
-    [mapView.layer addAnimation:[self pullDownAnimation] forKey:nil];
-    mapView.layer.speed = 0.0;
-    
-    [self.flyViews addObject:mapView];
-    
-    [self.scrollView addSubview:mapView];
-}
-
-
 /**
  This is the animation that is controlled using timeOffset when the user scrolls
  */
-- (CAAnimation *)pullDownAnimation
+- (CAAnimation *)customAnimation
 {
     
     CABasicAnimation *move = [CABasicAnimation animationWithKeyPath:@"transform.rotation.x"];
     move.fromValue = @(M_PI_4/4);
     move.toValue = @(M_PI_4/2) ;
  
-    
-    
-    /*
-   CABasicAnimation *loc = [CABasicAnimation animationWithKeyPath:@"transform.translation.z"];
-    loc.fromValue = @1;
-    loc.toValue = @500;
-    */
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.duration = 1.0; // For convenience when using timeOffset to control the animation
     group.animations = @[move];

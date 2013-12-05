@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Animation_Demo/ADFlyMenuViewController.m"
-            timestampString = "407651584.716284"
+            timestampString = "407908381.291311"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "152"
-            endingLineNumber = "152"
-            landmarkName = "-pullDownAnimation"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
+            landmarkName = "-customAnimation"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Animation_Demo/ADFlyMenuViewController.m"
-            timestampString = "407652564.859334"
+            timestampString = "407908381.291311"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "164"
-            endingLineNumber = "164"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
             landmarkName = "-scrollViewDidScroll:"
             landmarkType = "5">
          </BreakpointContent>
